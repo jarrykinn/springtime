@@ -20,7 +20,7 @@ import java.time.LocalDate;
 @Table(name = "rates")
 public class ExchangeRate extends BaseEntity {
 
-	@Column(name = "from_currency", unique = true)
+	@Column(name = "from_currency")
 	@NotEmpty
 	private String fromCurrency;
 

@@ -11,10 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface ExchangeRateRepository extends Repository<ExchangeRate, Integer> {
 
-	@Query("SELECT DISTINCT rates FROM ExchangeRate rates WHERE rates.fromCurrency LIKE :from_currency% ")
-	@Transactional(readOnly = true)
-	ExchangeRate findByFromCurrency(@Param("from_currency") String fromCurrency);
-
 	@Query("SELECT DISTINCT rates FROM ExchangeRate rates WHERE rates.fromCurrency LIKE :from_currency% AND rates.toCurrency LIKE :to_currency%")
 	@Transactional(readOnly = true)
 	ExchangeRate findByFromCurrencyAndToCurrency(@Param("from_currency") String fromCurrency,

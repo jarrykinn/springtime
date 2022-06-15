@@ -46,9 +46,10 @@ class ExchangeRateController {
 	@PostMapping("/rates")
 	public ResponseEntity processCreateExchangeRate(@RequestBody ExchangeRate exchangeRate) {
 		if (exchangeRate.getFromCurrency() == null || exchangeRate.getToCurrency() == null) {
-			return respondError(HttpStatus.BAD_REQUEST, "some currency missing!");
+			return respondError(HttpStatus.BAD_REQUEST, "From or To Currency missing!");
 		}
-		ExchangeRate rate = ratesRepository.findByFromCurrency(exchangeRate.getFromCurrency());
+		ExchangeRate rate = ratesRepository.findByFromCurrencyAndToCurrency(exchangeRate.getFromCurrency(),
+				exchangeRate.getToCurrency());
 		if (rate != null) {
 			exchangeRate.setId(rate.getId());
 		}
