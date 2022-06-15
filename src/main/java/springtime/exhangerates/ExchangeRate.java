@@ -31,7 +31,7 @@ public class ExchangeRate extends BaseEntity {
 	@NotEmpty
 	private String toCurrency;
 
-	@Column(name = "exchange_rate", precision = 10, scale = 5)
+	@Column(name = "exchange_rate", precision = 10, scale = 6)
 	@DecimalMin(value = "0.0", inclusive = true)
 	@DecimalMax(value = "9999999.9", inclusive = true)
 	private BigDecimal exchangeRate;
