@@ -20,15 +20,10 @@ public class PersonalIdentityCode extends BaseEntity {
 		return super.getId();
 	}
 
-	/*
-	 * @Pattern( regexp =
-	 * "^(0[1-9]|[12]\\d|3[01])(0[1-9]|1[0-2])([5-9]\\d\\+|\\d\\d-|[01]\\dA)\\d{3}[\\dABCDEFHJKLMNPRSTUVWXY]$",
-	 * flags = Pattern.Flag.UNICODE_CASE)
-	 */
 	@SsnConstraint
 	private String ssn;
 
-	@Pattern(regexp = "^[\\D]{2}$", flags = Pattern.Flag.UNICODE_CASE)
+	@CountryCodeConstraint
 	private String countryCode;
 
 	@Transient
