@@ -3,11 +3,13 @@ package springtime.exhangerates;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -68,7 +70,44 @@ class ExchangeRateController {
 	@GetMapping("/rates/update")
 	public ResponseEntity processCreateExchangeRate(@RequestHeader("X-Appengine-Cron") String headerXAppengineCron) {
 		System.out.println("CronJob called! with X-Appengine-Cron: " + headerXAppengineCron);
+		String uriEurToSekUsd = "https://api.apilayer.com/exchangerates_data/latest?symbols=SEK%2CUSD&base=EUR";
+		String uriSekToUsd = "https://api.apilayer.com/exchangerates_data/latest?symbols=USD&base=SEK";
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("apikey", "COX9LGyhShxz2EyEaJHJcGd7QShikAx1");
+		HttpEntity<String> entity = new HttpEntity<>("body", headers);
+
+		// base EUR to SEK and USD
+		ResponseEntity<Map> response = restTemplate.exchange(uriEurToSekUsd, HttpMethod.GET, entity, Map.class);
+		long timestamp = Integer.toUnsignedLong((Integer) response.getBody().get("timestamp"));
+		// LocalDate date = LocalDate.parse(response.getBody().get("date").toString()));
+		Map latestRates = (Map) response.getBody().get("rates");
+		BigDecimal fromEurToSek = BigDecimal.valueOf((Double) latestRates.get("SEK"));
+		BigDecimal fromEurToUsd = BigDecimal.valueOf((Double) latestRates.get("USD"));
+		updateOrCreateExchangeRate("EUR", "SEK", fromEurToSek, timestamp);
+		updateOrCreateExchangeRate("SEK", "EUR", new BigDecimal(1.0 / fromEurToSek.doubleValue()), timestamp);
+		updateOrCreateExchangeRate("EUR", "USD", fromEurToUsd, timestamp);
+		updateOrCreateExchangeRate("USD", "EUR", new BigDecimal(1.0 / fromEurToUsd.doubleValue()), timestamp);
+
+		// base SEK to USD
+		response = restTemplate.exchange(uriSekToUsd, HttpMethod.GET, entity, Map.class);
+		timestamp = Integer.toUnsignedLong((Integer) response.getBody().get("timestamp"));
+		latestRates = (Map) response.getBody().get("rates");
+		BigDecimal fromSekToUsd = BigDecimal.valueOf((Double) latestRates.get("USD"));
+		updateOrCreateExchangeRate("SEK", "USD", fromSekToUsd, timestamp);
+		updateOrCreateExchangeRate("USD", "SEK", new BigDecimal(1.0 / fromSekToUsd.doubleValue()), timestamp);
+
 		return ResponseEntity.ok().build();
+	}
+
+	private ExchangeRate updateOrCreateExchangeRate(String from, String to, BigDecimal exchangeRate, long timestamp) {
+		ExchangeRate rate = new ExchangeRate();
+		rate.setTimestamp(timestamp);
+		rate.setDate(LocalDate.now());
+		rate.setFromCurrency(from);
+		rate.setToCurrency(to);
+		rate.setExchangeRate(exchangeRate);
+		return (ExchangeRate) processCreateExchangeRate(rate).getBody();
 	}
 
 	@GetMapping("/exchange_amount")
