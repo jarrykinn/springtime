@@ -30,7 +30,7 @@ class ExchangeRateController {
 	}
 
 	@ModelAttribute("rate")
-	public ExchangeRate findOwner(@PathVariable(name = "id", required = false) Integer id) {
+	public ExchangeRate findExchangeRate(@PathVariable(name = "id", required = false) Integer id) {
 		return id == null ? new ExchangeRate() : this.ratesRepository.findById(id);
 	}
 
