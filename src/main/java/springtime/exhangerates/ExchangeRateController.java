@@ -65,6 +65,12 @@ class ExchangeRateController {
 		return ResponseEntity.ok(ratesRepository.findById(exchangeRate.getId()));
 	}
 
+	@GetMapping("/rates/update")
+	public ResponseEntity processCreateExchangeRate(@RequestHeader("X-Appengine-Cron") String headerXAppengineCron) {
+		System.out.println("CronJob called! with X-Appengine-Cron: " + headerXAppengineCron);
+		return ResponseEntity.ok().build();
+	}
+
 	@GetMapping("/exchange_amount")
 	public ResponseEntity exchangeAmount(@RequestParam String from, @RequestParam String to,
 			@RequestParam Float from_amount) {
