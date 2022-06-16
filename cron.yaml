@@ -1,0 +1,4 @@
+cron:
+  - description: "hourly exhange rates fetch/update"
+    url: /rates/update
+    schedule: every 3 hours
