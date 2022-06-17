@@ -13,12 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Controller to expose endpoint for validating Social Security Number(s) SSN.
- * 		POST /validate_ssn
- *         {
- *           "ssn": "131052-308T",
- *           "countryCode": "FI"
- *         }
+ * Controller to expose endpoint for validating Social Security Number(s) SSN. POST
+ * /validate_ssn { "ssn": "131052-308T", "countryCode": "FI" }
  */
 @RestController
 class PersonalIdentityCodeController {
@@ -30,15 +26,8 @@ class PersonalIdentityCodeController {
 
 	@PostMapping("/validate_ssn")
 	public ResponseEntity validateSsnBody(@RequestBody @Valid PersonalIdentityCode ssn) {
-		System.out.println("SSN: " + ssn.getSsn());
 		ssn.setSsn_valid(true);
 		return ResponseEntity.ok().body(ssn);
-	}
-
-	private ResponseEntity respondError(HttpStatus status, String message) {
-		Map<String, String> error = new HashMap<>();
-		error.put("message", message);
-		return ResponseEntity.status(status).body(error);
 	}
 
 }

@@ -23,7 +23,9 @@ class ErrorHandlingControllerAdvice {
 	ValidationErrorResponse onConstraintValidationException(ConstraintViolationException e) {
 		ValidationErrorResponse error = new ValidationErrorResponse();
 		for (ConstraintViolation violation : e.getConstraintViolations()) {
-			error.getViolations().add(new Violation(violation.getPropertyPath().toString(), violation.getMessage()));
+			error.setSsn_valid(false);
+			error.getViolations()
+					.add(new Violation(violation.getPropertyPath().toString(), null, violation.getMessage()));
 		}
 		return error;
 	}
@@ -34,7 +36,9 @@ class ErrorHandlingControllerAdvice {
 	ValidationErrorResponse onMethodArgumentNotValidException(MethodArgumentNotValidException e) {
 		ValidationErrorResponse error = new ValidationErrorResponse();
 		for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
-			error.getViolations().add(new Violation(fieldError.getField(), fieldError.getDefaultMessage()));
+			error.setSsn_valid(false);
+			error.getViolations().add(new Violation(fieldError.getField(), fieldError.getRejectedValue().toString(),
+					fieldError.getDefaultMessage()));
 		}
 		return error;
 	}

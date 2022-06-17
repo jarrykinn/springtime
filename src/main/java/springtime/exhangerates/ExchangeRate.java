@@ -1,5 +1,6 @@
 package springtime.exhangerates;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.format.annotation.DateTimeFormat;
 import springtime.model.BaseEntity;
 
@@ -14,16 +15,28 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
- * Business object representing an exchange rate.
+ * Business object representing an exchange rate saved in database and also the response
+ * object for currency exchange actions.
  */
 @Entity
 @Table(name = "rates")
 public class ExchangeRate extends BaseEntity {
 
+	/**
+	 * Just to hide unnecessary ID from response
+	 * @return
+	 */
+	@JsonIgnore
+	@Override
+	public Integer getId() {
+		return super.getId();
+	}
+
 	@Column(name = "from_currency")
 	@NotEmpty
 	private String fromCurrency;
 
+	// not used
 	@Column(name = "full_name")
 	private String fullName;
 

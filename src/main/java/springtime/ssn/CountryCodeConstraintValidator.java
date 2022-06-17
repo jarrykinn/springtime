@@ -10,19 +10,19 @@ public class CountryCodeConstraintValidator implements ConstraintValidator<Count
 	public boolean isValid(String countryCode, ConstraintValidatorContext cvc) {
 		Pattern pattern = Pattern.compile("^[A-Z]{2}$");
 		if (countryCode == null) {
-			ValidatorTools.buildErrorMessage("Missing countryCode!", cvc);
+			ValidatorTools.buildErrorMessage("Missing country_code!", cvc);
 			return false;
 		}
 		countryCode = countryCode.trim();
 		if (countryCode.length() <= 0) {
-			ValidatorTools.buildErrorMessage("Empty countryCode!", cvc);
+			ValidatorTools.buildErrorMessage("Empty country_code!", cvc);
 			return false;
 		}
 		Matcher matcher = pattern.matcher(countryCode);
 		try {
 			if (!matcher.matches()) {
 				String nearCharacter = countryCode.substring(ValidatorTools.indexOfLastMatch(pattern, countryCode));
-				ValidatorTools.buildErrorMessage("Malformed countryCode near: '" + nearCharacter + "'", cvc);
+				ValidatorTools.buildErrorMessage("Malformed country_code near: '" + nearCharacter + "'", cvc);
 				return false;
 			}
 			else {

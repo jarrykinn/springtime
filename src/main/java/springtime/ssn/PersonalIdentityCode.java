@@ -1,6 +1,7 @@
 package springtime.ssn;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import springtime.model.BaseEntity;
 
 import javax.persistence.Entity;
@@ -21,9 +22,11 @@ public class PersonalIdentityCode extends BaseEntity {
 	}
 
 	@SsnConstraint
+	@JsonProperty("ssn")
 	private String ssn;
 
 	@CountryCodeConstraint
+	@JsonProperty("country_code")
 	private String countryCode;
 
 	@Transient

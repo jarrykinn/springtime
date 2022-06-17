@@ -64,11 +64,14 @@ class ExchangeRateController {
 			System.out.println("ERROR: " + e.getMessage());
 			return respondError(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
+		System.out.println("Updated exchange rate, " + exchangeRate.getFromCurrency() + " > "
+				+ exchangeRate.getToCurrency() + " rate: " + exchangeRate.getExchangeRate());
 		return ResponseEntity.ok(ratesRepository.findById(exchangeRate.getId()));
 	}
 
 	@GetMapping("/rates/update")
 	public ResponseEntity processCreateExchangeRate(@RequestHeader("X-Appengine-Cron") String headerXAppengineCron) {
+		Map<String, Object> result = new HashMap();
 		System.out.println("CronJob called! with X-Appengine-Cron: " + headerXAppengineCron);
 		String uriEurToSekUsd = "https://api.apilayer.com/exchangerates_data/latest?symbols=SEK%2CUSD&base=EUR";
 		String uriSekToUsd = "https://api.apilayer.com/exchangerates_data/latest?symbols=USD&base=SEK";
@@ -84,30 +87,33 @@ class ExchangeRateController {
 		Map latestRates = (Map) response.getBody().get("rates");
 		BigDecimal fromEurToSek = BigDecimal.valueOf((Double) latestRates.get("SEK"));
 		BigDecimal fromEurToUsd = BigDecimal.valueOf((Double) latestRates.get("USD"));
-		updateOrCreateExchangeRate("EUR", "SEK", fromEurToSek, timestamp);
-		updateOrCreateExchangeRate("SEK", "EUR", new BigDecimal(1.0 / fromEurToSek.doubleValue()), timestamp);
-		updateOrCreateExchangeRate("EUR", "USD", fromEurToUsd, timestamp);
-		updateOrCreateExchangeRate("USD", "EUR", new BigDecimal(1.0 / fromEurToUsd.doubleValue()), timestamp);
+		updateOrCreateExchangeRate("EUR", "SEK", fromEurToSek, timestamp, result);
+		updateOrCreateExchangeRate("SEK", "EUR", new BigDecimal(1.0 / fromEurToSek.doubleValue()), timestamp, result);
+		updateOrCreateExchangeRate("EUR", "USD", fromEurToUsd, timestamp, result);
+		updateOrCreateExchangeRate("USD", "EUR", new BigDecimal(1.0 / fromEurToUsd.doubleValue()), timestamp, result);
 
 		// base SEK to USD
 		response = restTemplate.exchange(uriSekToUsd, HttpMethod.GET, entity, Map.class);
 		timestamp = Integer.toUnsignedLong((Integer) response.getBody().get("timestamp"));
 		latestRates = (Map) response.getBody().get("rates");
 		BigDecimal fromSekToUsd = BigDecimal.valueOf((Double) latestRates.get("USD"));
-		updateOrCreateExchangeRate("SEK", "USD", fromSekToUsd, timestamp);
-		updateOrCreateExchangeRate("USD", "SEK", new BigDecimal(1.0 / fromSekToUsd.doubleValue()), timestamp);
+		updateOrCreateExchangeRate("SEK", "USD", fromSekToUsd, timestamp, result);
+		updateOrCreateExchangeRate("USD", "SEK", new BigDecimal(1.0 / fromSekToUsd.doubleValue()), timestamp, result);
 
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok().body(result);
 	}
 
-	private ExchangeRate updateOrCreateExchangeRate(String from, String to, BigDecimal exchangeRate, long timestamp) {
+	private ExchangeRate updateOrCreateExchangeRate(String from, String to, BigDecimal exchangeRate, long timestamp,
+			Map result) {
 		ExchangeRate rate = new ExchangeRate();
 		rate.setTimestamp(timestamp);
 		rate.setDate(LocalDate.now());
 		rate.setFromCurrency(from);
 		rate.setToCurrency(to);
 		rate.setExchangeRate(exchangeRate);
-		return (ExchangeRate) processCreateExchangeRate(rate).getBody();
+		rate = (ExchangeRate) processCreateExchangeRate(rate).getBody();
+		result.put(from + " > " + to, exchangeRate);
+		return rate;
 	}
 
 	@GetMapping("/exchange_amount")
