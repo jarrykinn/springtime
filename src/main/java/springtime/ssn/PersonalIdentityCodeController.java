@@ -22,11 +22,16 @@ class PersonalIdentityCodeController {
 		dataBinder.setDisallowedFields("id");
 	}
 
-	@PostMapping("/validate_ssn")
-	public ResponseEntity processCreateExchangeRate(@RequestBody @Valid PersonalIdentityCode ssn) {
+	@PostMapping("/validate_ssn/body")
+	public ResponseEntity validateSsnBody(@RequestBody @Valid PersonalIdentityCode ssn) {
 		System.out.println("SSN: " + ssn.getSsn());
 		ssn.setSsn_valid(true);
 		return ResponseEntity.ok().body(ssn);
+	}
+
+	@PostMapping("/validate_ssn")
+	public ResponseEntity validateSsnParams(@RequestParam String ssn, @RequestParam String country_code) {
+		return ResponseEntity.ok().build();
 	}
 
 	private ResponseEntity respondError(HttpStatus status, String message) {
