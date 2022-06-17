@@ -15,7 +15,11 @@ cd springtime
 
 **SpringTime** can be accessed here: http://localhost:8080/
 
-When running in localhost, the **H2** memory based DB is in use.
+When running in localhost, the **H2** memory based DB is in use. See `/src/main/resources/db/h2`
+When starting up look for this kind of line in logs to see how to access the H2 console:
+```
+H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:e7b077b7-1c04-4100-8942-92ac789e9e8e'
+```
 
 ## Endpoints
 Following endpoints are available:
