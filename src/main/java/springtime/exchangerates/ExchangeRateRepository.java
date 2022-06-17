@@ -1,4 +1,4 @@
-package springtime.exhangerates;
+package springtime.exchangerates;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
