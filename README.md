@@ -13,18 +13,21 @@ cd springtime
 ./mvnw spring-boot:run
 ```
 
-You can then access **SpringTime** here: http://localhost:8080/
+Then you can then access **SpringTime** here: http://localhost:8080/
 
 ## Endpoints
 Following endpoints are available:
 
 * **POST /exchange_amount**
   * Exchange money from EUR to SEK and USD and vice versa
-  * the result can be read from response `toAmount`
+    * `from` eg. EUR
+    * `to` e.g. SEK
+    * `from_amount` e.g. 10
+  * the result can be read from response `to_amount`
   * `date` and `timestamp` tells when the exchange rate has been updated
 ```
 POST http://localhost:8080/exchange_amount?from=SEK&to=EUR&from_amount=10
-    example response:
+    Example response:
         {
             "fromCurrency": "SEK",
             "toCurrency": "EUR",
@@ -32,7 +35,7 @@ POST http://localhost:8080/exchange_amount?from=SEK&to=EUR&from_amount=10
             "date": "2022-06-16",
             "timestamp": 1655403723,
             "fromAmount": 10.0,
-            "toAmount": 0.93353003,
+            "to_amount": 0.93353003,
             "new": false
         }
 ```
@@ -46,15 +49,14 @@ GET http://localhost:8080/validate_ssn
       "ssn": "131052-308T",
       "country_code": "FI"
     }
-    example response:
+    Example response:
         {
           "ssn_valid": true,
           "ssn": "131052-308T",
           "country_code": "FI"
         }
     
-    example error responses:
-    
+    Example error responses:
     Wrong checksum:
         {
           "ssn_valid": false,
@@ -134,7 +136,7 @@ This service is also deployed to the GCP cloud (see `app.yaml`).
 It is running in following address:
 https://my-mysql-spring-014-06.oa.r.appspot.com/
 
-So all the endpoints works also in that host. Like
+So all the endpoints works also in that host. Like:
 ```
 POST https://my-mysql-spring-014-06.oa.r.appspot.com/exchange_amount?from=SEK&to=EUR&from_amount=10
 ```
@@ -149,6 +151,6 @@ GET https://my-mysql-spring-014-06.oa.r.appspot.com/validate_ssn
 
 The Cron Jobs are demonstarted in GCP by configuring it running there (see `cron.yaml`).
 
-It is running only every 12 hours since running this service in GCP costs real € money ;-)
+It is running only every 12 hours, since running this service in GCP costs real € money ;-)
 
 ![image info](./README-images/cron-jobs-gcp.png)

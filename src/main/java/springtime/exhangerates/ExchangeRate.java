@@ -1,6 +1,7 @@
 package springtime.exhangerates;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 import springtime.model.BaseEntity;
 
@@ -33,6 +34,7 @@ public class ExchangeRate extends BaseEntity {
 	}
 
 	@Column(name = "from_currency")
+	@JsonProperty("from_currency")
 	@NotEmpty
 	private String fromCurrency;
 
@@ -41,10 +43,12 @@ public class ExchangeRate extends BaseEntity {
 	private String fullName;
 
 	@Column(name = "to_currency")
+	@JsonProperty("to_currency")
 	@NotEmpty
 	private String toCurrency;
 
 	@Column(name = "exchange_rate", precision = 10, scale = 6)
+	@JsonProperty("exchange_rate")
 	@DecimalMin(value = "0.0", inclusive = true)
 	@DecimalMax(value = "9999999.9", inclusive = true)
 	private BigDecimal exchangeRate;
@@ -58,10 +62,12 @@ public class ExchangeRate extends BaseEntity {
 
 	@Column(name = "from_amount")
 	@Transient
+	@JsonProperty("from_amount")
 	private Float fromAmount;
 
 	@Column(name = "to_amount")
 	@Transient
+	@JsonProperty("to_amount")
 	private Float toAmount;
 
 	public String getFromCurrency() {
