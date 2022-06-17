@@ -13,7 +13,9 @@ cd springtime
 ./mvnw spring-boot:run
 ```
 
-Then you can then access **SpringTime** here: http://localhost:8080/
+**SpringTime** can be accessed here: http://localhost:8080/
+
+When running in localhost, the **H2** memory based DB is in use.
 
 ## Endpoints
 Following endpoints are available:
@@ -150,6 +152,9 @@ GET https://my-mysql-spring-014-06.oa.r.appspot.com/validate_ssn
 ```
 
 The Cron Jobs are demonstarted in GCP by configuring it running there (see `cron.yaml`).
+It is utilizing:
+* CloudSQL (MySQL)
+* GCP Cron Jobs
 
 It is running only every 12 hours, since running this service in GCP costs real € money ;-)
 
