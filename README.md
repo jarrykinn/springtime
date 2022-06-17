@@ -1,6 +1,11 @@
-# "springtime" 
+# "SpringTime" 
 ### Spring Boot Exercise Application
 
+Simple application implementing couple of Spring Boot endpoints.
+
+&copy; Jari Kinnunen, Helsinki June 17th, 2022
+
+Try it out:
 ```
 git clone git@github.com:jarrykinn/springtime.git
 cd springtime
@@ -8,8 +13,9 @@ cd springtime
 ./mvnw spring-boot:run
 ```
 
-You can then access **springtime** here: http://localhost:8080/
+You can then access **SpringTime** here: http://localhost:8080/
 
+## Endpoints
 Following endpoints are available:
 
 * **POST /exchange_amount**
@@ -35,12 +41,114 @@ POST http://localhost:8080/exchange_amount?from=SEK&to=EUR&from_amount=10
     * Validate Social Security Number
     * by the rules from here: https://dvv.fi/en/personal-identity-code
 ```
-POST http://localhost:8080/validate_ssn?ssn=131052-308T&country_code=FI
+GET http://localhost:8080/validate_ssn
+    {
+      "ssn": "131052-308T",
+      "country_code": "FI"
+    }
     example response:
         {
+          "ssn_valid": true,
+          "ssn": "131052-308T",
+          "country_code": "FI"
         }
+    
+    example error responses:
+    
+    Wrong checksum:
+        {
+          "ssn_valid": false,
+          "errors": [
+            {
+              "field_name": "ssn",
+              "rejected_value": "131052-408T",
+              "message": "SSN checksum character mismatch T ≠ 1"
+            }
+          ]
+        }
+    
+    Malformed SSN:
+        {
+          "ssn_valid": false,
+          "errors": [
+            {
+              "field_name": "ssn",
+              "rejected_value": "131052X408T",
+              "message": "Malformed SSN number near: 'X408T'"
+            }
+          ]
+        }
+        
+    Wrong country_code:
+        {
+          "ssn_valid": false,
+          "errors": [
+            {
+              "field_name": "countryCode",
+              "rejected_value": "SE",
+              "message": "Only FI supported for now!"
+            }
+          ]
+        }
+}
+```
+Some extra endpoints:
+
+* **GET /rates**
+  * List saved exchange rates
+```
+GET http://localhost:8080/rates
+
+    {
+    "content": [
+        {
+            "fromCurrency": "EUR",
+            "fullName": "",
+            "toCurrency": "SEK",
+            "exchangeRate": 10.7121,
+            "date": "2022-06-16",
+            "timestamp": 1655403723,
+            "fromAmount": null,
+            "toAmount": null,
+            "new": false
+        }, ...
 ```
 
+* **GET /rates/update**
+  * Trigger exchange rates update from https://apilayer.com/marketplace/description/exchangerates_data-api
+  * This is also triggered by GCP Cron Job (see below)
+```
+GET http://localhost:8080/rates/update
+    {
+    "EUR > SEK": 10.700897,
+    "USD > EUR": 0.9519802140432311876594440036569721996784210205078125,
+    "SEK > EUR": 0.09345010983658659509121235942075145430862903594970703125,
+    "SEK > USD": 0.098182,
+    "USD > SEK": 10.1851663237660670091599968145601451396942138671875,
+    "EUR > USD": 1.050442
+    }
+```
+## Google Cloud Platform deployment
 
+This service is also deployed to the GCP cloud (see `app.yaml`).
+It is running in following address:
+https://my-mysql-spring-014-06.oa.r.appspot.com/
+
+So all the endpoints works also in that host. Like
+```
+POST https://my-mysql-spring-014-06.oa.r.appspot.com/exchange_amount?from=SEK&to=EUR&from_amount=10
+```
+or
+```
+GET https://my-mysql-spring-014-06.oa.r.appspot.com/validate_ssn
+    {
+      "ssn": "131052-308T",
+      "country_code": "FI"
+    }
+```
+
+The Cron Jobs are demonstarted in GCP by configuring it running there (see `cron.yaml`).
+
+It is running only every 12 hours since running this service in GCP costs real € money ;-)
 
 ![image info](./README-images/cron-jobs-gcp.png)
