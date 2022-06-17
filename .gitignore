@@ -25,7 +25,7 @@ hs_err_pid*
 target
 .idea
 .DS_Store
-src/main/resources/db
+src/main/resources/db/mysql
 src/main/resources/keys
 src/main/resources/application-mysql.properties
 

@@ -43,11 +43,12 @@
   </dependencyManagement>
 
   <dependencies>
-      <!-- Add CloudSQL Starter for MySQL -->
+      <!-- NOTE! REMEMBER TO DISABLE/ENABLE this when switching between localhost H2 and CLoudSQL usage -->
+      <!-- Add CloudSQL Starter for MySQL
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>spring-cloud-gcp-starter-sql-mysql</artifactId>
-      </dependency>
+      </dependency> -->
 
     <!-- Spring and Spring Boot dependencies -->
     <dependency>
