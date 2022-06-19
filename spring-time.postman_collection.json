@@ -1,0 +1,137 @@
+{
+	"info": {
+		"_postman_id": "32626ac1-d157-42ec-bd9e-0eb098a0e456",
+		"name": "spring-time",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21472932"
+	},
+	"item": [
+		{
+			"name": "/rates",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/rates",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"rates"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/rates/update",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Appengine-Cron",
+						"value": "false",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{HOST}}/rates/update",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"rates",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/exchange_amount",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/exchange_amount?from=EUR&to=SEK&from_amount=20.00",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"exchange_amount"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "EUR"
+						},
+						{
+							"key": "to",
+							"value": "SEK"
+						},
+						{
+							"key": "from_amount",
+							"value": "20.00"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/validate_ssn",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"ssn\": \"131052-308T\",\n    \"country_code\": \"FI\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/validate_ssn",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"validate_ssn"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

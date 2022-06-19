@@ -44,7 +44,8 @@ mvn test
 
 
 ## Endpoints
-Following endpoints are available:
+Following endpoints are available.
+<br>(see also file `spring-time.postman_collection.json`)
 
 * **POST /exchange_amount**
   * Exchange money from EUR to SEK and USD and vice versa
