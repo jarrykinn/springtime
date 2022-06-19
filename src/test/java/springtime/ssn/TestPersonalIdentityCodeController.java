@@ -55,7 +55,7 @@ class TestPersonalIdentityCodeController {
 				.andExpect(content().json("{'ssn_valid': false}"))
 				.andExpect(content().json("{'errors': [{'message': 'SSN checksum character mismatch T ≠ U'}]}"));
 
-		// Wrong checksum SSN
+		// Not valid country code
 		ssn.setSsn(validSsn);
 		ssn.setCountryCode(notValidCountryCode);
 		mockMvc.perform(MockMvcRequestBuilders.post("/validate_ssn").content(mapper.writeValueAsString(ssn))
