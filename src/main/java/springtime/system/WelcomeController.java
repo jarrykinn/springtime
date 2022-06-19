@@ -15,7 +15,7 @@ class WelcomeController {
 	@GetMapping("/")
 	public Map welcome() {
 		Map response = new HashMap();
-		response.put("welcome", "Welcome to the SpringTime endpoints");
+		response.put("welcome", "Welcome to the SpringTime endpoints. Check README.md for details!");
 		List<String> endpoints = new ArrayList<>();
 		endpoints.add("POST /validate_ssn");
 		endpoints.add("GET /exchange_amount");

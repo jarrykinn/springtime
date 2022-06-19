@@ -5,11 +5,21 @@ Simple application implementing couple of Spring Boot endpoints.
 
 &copy; Jari Kinnunen, Helsinki June 17th, 2022
 
-Try it out:
+## How to build and run:
+Some prerequisites, successfully built with these:
+```
+Maven: apache-maven-3.8.5
+Java version: 18.0.1, vendor: Oracle Corporation
+```
+Source code and build
 ```
 git clone git@github.com:jarrykinn/springtime.git
 cd springtime
 ./mvnw package
+```
+or
+```
+./mvnw spring-javaformat:apply; mvn clean install
 ./mvnw spring-boot:run
 ```
 
@@ -20,6 +30,18 @@ When starting up look for this kind of line in logs to see how to access the H2 
 ```
 H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:e7b077b7-1c04-4100-8942-92ac789e9e8e'
 ```
+
+## Unit tests
+There are two unit test classes for the controllers:
+```
+TestExchangeRateController.java
+TestPersonalIdentityCodeController.java
+```
+They can be executed e.g. like this
+```
+mvn test
+```
+
 
 ## Endpoints
 Following endpoints are available:
@@ -142,6 +164,12 @@ This service is also deployed to the GCP cloud (see `app.yaml`).
 It is running in following address:
 https://my-mysql-spring-014-06.oa.r.appspot.com/
 
+It is utilizing:
+* CloudSQL (MySQL)
+* GCP Cron Jobs
+
+NOTE! first call may take several seconds since the instance is not kept running all the time.
+
 So all the endpoints works also in that host. Like:
 ```
 POST https://my-mysql-spring-014-06.oa.r.appspot.com/exchange_amount?from=SEK&to=EUR&from_amount=10
@@ -155,11 +183,6 @@ GET https://my-mysql-spring-014-06.oa.r.appspot.com/validate_ssn
     }
 ```
 
-The Cron Jobs are demonstarted in GCP by configuring it running there (see `cron.yaml`).
-It is utilizing:
-* CloudSQL (MySQL)
-* GCP Cron Jobs
-
-It is running only every 12 hours, since running this service in GCP costs real € money ;-)
+The Cron Jobs are demonstarted in GCP by configuring it running there (see `cron.yaml`). It is running only every 12 hours, since running this service in GCP costs real € money ;-)
 
 ![image info](./README-images/cron-jobs-gcp.png)
