@@ -45,32 +45,8 @@ class ExchangeRateController {
 		return ratesRepository.findAll(pageable);
 	}
 
-	@PostMapping("/rates")
-	public ResponseEntity processCreateExchangeRate(@RequestBody ExchangeRate exchangeRate) {
-		if (exchangeRate.getFromCurrency() == null || exchangeRate.getToCurrency() == null) {
-			return respondError(HttpStatus.BAD_REQUEST, "From or To Currency missing!");
-		}
-		ExchangeRate rate = ratesRepository.findByFromCurrencyAndToCurrency(exchangeRate.getFromCurrency(),
-				exchangeRate.getToCurrency());
-		if (rate != null) {
-			exchangeRate.setId(rate.getId());
-		}
-		try {
-			exchangeRate.setFromCurrency(exchangeRate.getFromCurrency().toUpperCase(Locale.ROOT));
-			exchangeRate.setToCurrency(exchangeRate.getToCurrency().toUpperCase(Locale.ROOT));
-			this.ratesRepository.save(exchangeRate);
-		}
-		catch (Exception e) {
-			System.out.println("ERROR: " + e.getMessage());
-			return respondError(HttpStatus.BAD_REQUEST, e.getMessage());
-		}
-		System.out.println("Updated exchange rate, " + exchangeRate.getFromCurrency() + " > "
-				+ exchangeRate.getToCurrency() + " rate: " + exchangeRate.getExchangeRate());
-		return ResponseEntity.ok(ratesRepository.findById(exchangeRate.getId()));
-	}
-
 	@GetMapping("/rates/update")
-	public ResponseEntity processCreateExchangeRate(
+	public ResponseEntity createOrUpdateExchangeRate(
 			@RequestHeader(value = "X-Appengine-Cron", required = false) String headerXAppengineCron) {
 		Map<String, Object> result = new HashMap();
 		System.out.println("CronJob called! with X-Appengine-Cron: " + headerXAppengineCron);
@@ -112,9 +88,32 @@ class ExchangeRateController {
 		rate.setFromCurrency(from);
 		rate.setToCurrency(to);
 		rate.setExchangeRate(exchangeRate);
-		rate = (ExchangeRate) processCreateExchangeRate(rate).getBody();
+		rate = (ExchangeRate) createOrUpdateExchangeRate(rate).getBody();
 		result.put(from + " > " + to, exchangeRate);
 		return rate;
+	}
+
+	private ResponseEntity createOrUpdateExchangeRate(@RequestBody ExchangeRate exchangeRate) {
+		if (exchangeRate.getFromCurrency() == null || exchangeRate.getToCurrency() == null) {
+			return respondError(HttpStatus.BAD_REQUEST, "From or To Currency missing!");
+		}
+		ExchangeRate rate = ratesRepository.findByFromCurrencyAndToCurrency(exchangeRate.getFromCurrency(),
+				exchangeRate.getToCurrency());
+		if (rate != null) {
+			exchangeRate.setId(rate.getId());
+		}
+		try {
+			exchangeRate.setFromCurrency(exchangeRate.getFromCurrency().toUpperCase(Locale.ROOT));
+			exchangeRate.setToCurrency(exchangeRate.getToCurrency().toUpperCase(Locale.ROOT));
+			this.ratesRepository.save(exchangeRate);
+		}
+		catch (Exception e) {
+			System.out.println("ERROR: " + e.getMessage());
+			return respondError(HttpStatus.BAD_REQUEST, e.getMessage());
+		}
+		System.out.println("Updated exchange rate, " + exchangeRate.getFromCurrency() + " > "
+				+ exchangeRate.getToCurrency() + " rate: " + exchangeRate.getExchangeRate());
+		return ResponseEntity.ok(ratesRepository.findById(exchangeRate.getId()));
 	}
 
 	@GetMapping("/exchange_amount")
