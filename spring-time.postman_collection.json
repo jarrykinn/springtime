@@ -65,7 +65,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{HOST}}/exchange_amount?from=EUR&to=SEK&from_amount=20.00",
+					"raw": "{{HOST}}/exchange_amount?from=SEK&to=EUR&from_amount=10",
 					"host": [
 						"{{HOST}}"
 					],
@@ -75,15 +75,15 @@
 					"query": [
 						{
 							"key": "from",
-							"value": "EUR"
-						},
-						{
-							"key": "to",
 							"value": "SEK"
 						},
 						{
+							"key": "to",
+							"value": "EUR"
+						},
+						{
 							"key": "from_amount",
-							"value": "20.00"
+							"value": "10"
 						}
 					]
 				}
