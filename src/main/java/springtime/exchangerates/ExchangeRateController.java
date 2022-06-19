@@ -70,7 +70,8 @@ class ExchangeRateController {
 	}
 
 	@GetMapping("/rates/update")
-	public ResponseEntity processCreateExchangeRate(@RequestHeader("X-Appengine-Cron") String headerXAppengineCron) {
+	public ResponseEntity processCreateExchangeRate(
+			@RequestHeader(value = "X-Appengine-Cron", required = false) String headerXAppengineCron) {
 		Map<String, Object> result = new HashMap();
 		System.out.println("CronJob called! with X-Appengine-Cron: " + headerXAppengineCron);
 		String uriEurToSekUsd = "https://api.apilayer.com/exchangerates_data/latest?symbols=SEK%2CUSD&base=EUR";
